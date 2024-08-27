@@ -1,6 +1,8 @@
 from keras import layers
 from keras import activations
 from keras import backend as K
+import tensorflow as tf
+
 
 class PatchEmbedding(layers.Layer):
     """patch embedding layer"""
@@ -70,7 +72,7 @@ class MultiHeadAttention(layers.Layer):
         self.heads = heads
 
     def build(self, input_shape):
-        self.dk = K.sqrt(K.cast(input_shape[-1]//self.heads, dtype=K.tf.float32))
+        self.dk = tf.sqrt(tf.cast(input_shape[-1]//self.heads, dtype=tf.float32))
         self.q_dense = layers.Dense(input_shape[-1], name="query")
         self.k_dense = layers.Dense(input_shape[-1], name="key")
         self.v_dense = layers.Dense(input_shape[-1], name="value")
@@ -81,13 +83,13 @@ class MultiHeadAttention(layers.Layer):
         q = self.q_dense(inputs)
         k = self.k_dense(inputs)
         v = self.v_dense(inputs)
-        q = K.concatenate(K.tf.split(q, self.heads, axis=-1), axis=0)
-        k = K.concatenate(K.tf.split(k, self.heads, axis=-1), axis=0)
-        v = K.concatenate(K.tf.split(v, self.heads, axis=-1), axis=0)
-        qk = K.tf.matmul(q, k, transpose_b=True)  
+        q = tf.concat(tf.split(q, self.heads, axis=-1), axis=0)
+        k = tf.concat(tf.split(k, self.heads, axis=-1), axis=0)
+        v = tf.concat(tf.split(v, self.heads, axis=-1), axis=0)
+        qk = tf.matmul(q, k, transpose_b=True) 
         qk = activations.softmax(qk / self.dk)
-        qkv = K.tf.matmul(qk, v)
-        qkv = K.concatenate(K.tf.split(qkv, self.heads, axis=0), axis=-1)
+        qkv = tf.matmul(qk, v)
+        qkv = tf.concat(tf.split(qkv, self.heads, axis=0), axis=-1)
         return self.o_dense(qkv)
 
 
