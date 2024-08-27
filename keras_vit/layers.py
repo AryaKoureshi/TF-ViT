@@ -1,6 +1,5 @@
 from keras import layers
 from keras import activations
-from keras import backend as K
 import tensorflow as tf
 
 
@@ -38,8 +37,8 @@ class AddCLSToken(layers.Layer):
         return super().build(input_shape)
 
     def call(self, inputs):   
-        x = K.tile(self.class_token, [K.shape(inputs)[0],1,1])
-        x = K.concatenate([x, inputs], axis=1)
+        x = tf.tile(self.class_token, [tf.shape(inputs)[0], 1, 1])
+        x = tf.concat([x, inputs], axis=1)
         return x
 
 
