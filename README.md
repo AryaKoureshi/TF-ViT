@@ -1,4 +1,4 @@
-# keras-vit
+# TF-ViT
 
 This package is a Vision Transformer (ViT) implementation based on the Keras framework. The ViT model was proposed in the paper "[An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/pdf/2010.11929.pdf)". This package uses pre-trained weights from the ImageNet21K dataset and the ImageNet21K+ImageNet2012 dataset, which are in .npz format.
 
@@ -6,10 +6,11 @@ This package is a Vision Transformer (ViT) implementation based on the Keras fra
 
 - Python >= 3.7
 - Keras >= 2.9
-
+- TF == 2.15
+- 
 - To install:
   ```bash
-  pip install keras-vit
+  pip install TF-ViT
   ```
 
 ## **Q1: What can you do with this package?**
