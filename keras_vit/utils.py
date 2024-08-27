@@ -1,8 +1,7 @@
 import cv2
 from keras import utils
-from keras import backend as K
 from .config import BASIC_URL, FNAME_CLASSES_IN2012
-
+import numpy as np
 
 def load_imgnet_weights(keras_model, weights_npz):
     """Load the imagenet pre training weights (.npz) for ViT Keras model.
@@ -14,7 +13,8 @@ def load_imgnet_weights(keras_model, weights_npz):
     return:
         - load_inf: Dict of information about loading weights for each layer of the keras_model
     """
-    params_dict = K.np.load(weights_npz, allow_pickle=False)
+    params_dict = np.load(weights_npz, allow_pickle=False)
+
     keys = set(params_dict.keys())
     transformer_blocks_num = len([k for k in keys if k.startswith("Transformer/encoderblock_")])//16
     
