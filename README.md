@@ -291,6 +291,3 @@ _SIZE,
    > *For fine-tuning, both* `"imagenet21k"` *and* `"imagenet21k+imagenet2012"` *can be used.*
 
 The project includes a script `fine_tuning_on_CIFAR10_demo.py` for fine-tuning on the [CIFAR10 dataset](https://pan.baidu.com/s/1-BCPxN57mtHh2OwQVJTOSA?pwd=52dl). Before running, unzip the dataset and place it in the `datasets` folder.
-```
-
-This Markdown content translates the original Chinese content into English while retaining the structure and technical details.
