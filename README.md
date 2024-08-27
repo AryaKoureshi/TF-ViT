@@ -236,9 +236,7 @@ This package is a Vision Transformer (ViT) implementation based on the Keras fra
    
    # Build ViT
    vit = ViT_B32(
-       image_size=IMAGE
-
-_SIZE,
+       image_size=IMAGE_SIZE,
        num_classes=NUM_CLASSES,
        activation=ACTIVATION,
    )
