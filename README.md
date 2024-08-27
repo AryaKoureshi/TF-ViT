@@ -1,143 +1,142 @@
 # keras-vit
 
-这个包是基于Keras框架的Vision Transformer（ViT）实现。 ViT模型由论文 "[An image is worth 16x16 words: transformers for image recognition at scale](https://arxiv.org/pdf/2010.11929.pdf)" 提出。这个包使用在imagenet21K数据集和imagenet21K+imagenet2012数据集上的预训练权重，它们是.npz格式的。
+This package is a Vision Transformer (ViT) implementation based on the Keras framework. The ViT model was proposed in the paper "[An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://arxiv.org/pdf/2010.11929.pdf)". This package uses pre-trained weights from the ImageNet21K dataset and the ImageNet21K+ImageNet2012 dataset, which are in .npz format.
 
-## **◈ 版本要求和安装**
+## **◈ Version Requirements and Installation**
 
 - Python >= 3.7
-
 - Keras >= 2.9
 
-- ```
+- To install:
+  ```bash
   pip install keras-vit
   ```
 
-## **Q1: 能用这个包干什么？**
+## **Q1: What can you do with this package?**
 
-- 构建标准架构的预训练VisionTransformer（ViT）模型
+- Build a pre-trained Vision Transformer (ViT) model with a standard architecture.
+- Build a ViT model with custom parameters for different tasks.
 
-- 构建自定义参数的ViT模型以适用于不同任务
+## **Q2: How to build a pre-trained ViT model?**
 
-## **Q2: 如何构建预训练 ViT模型？**
+1. **Quickly build a pre-trained ViT B16**
 
-1. **快速构建预训练 ViTB16**
-   
-   ```
+   ```python
    from keras_vit.vit import ViT_B16
    vit = ViT_B16()
    ```
-   
-   > *预训练ViT有四种配置 ：ViT_B16，ViT_B32，ViT_L16 和 ViT_L32*
+
+   > *There are four configurations of pre-trained ViT models: ViT_B16, ViT_B32, ViT_L16, and ViT_L32*
    > 
-   > | 配置        | patch size | hiddem dim | mlp dim | attention heads | encoder depth |
-   > |:---------:|:----------:|:----------:|:-------:|:---------------:|:-------------:|
-   > | *ViT_B16* | 16×16      | 768        | 3072    | 12              | 12            |
-   > | *ViT_B32* | 32×32      | 768        | 3072    | 12              | 12            |
-   > | *ViT_L16* | 16×16      | 1024       | 4096    | 16              | 24            |
-   > | *ViT_L32* | 32×32      | 1024       | 4096    | 16              | 24            |
+   > | Configuration | Patch Size | Hidden Dim | MLP Dim | Attention Heads | Encoder Depth |
+   > |:-------------:|:----------:|:----------:|:-------:|:---------------:|:-------------:|
+   > | *ViT_B16*     | 16×16      | 768        | 3072    | 12              | 12            |
+   > | *ViT_B32*     | 32×32      | 768        | 3072    | 12              | 12            |
+   > | *ViT_L16*     | 16×16      | 1024       | 4096    | 16              | 24            |
+   > | *ViT_L32*     | 32×32      | 1024       | 4096    | 16              | 24            |
    > 
-   > *数据集 "imagenet21k" 和 "imagenet21k+imagenet2012" 的预训练权重对应的模型参数有些许不同，如下表所示：*
+   > *Pre-trained weights for the datasets "imagenet21k" and "imagenet21k+imagenet2012" have slightly different model parameters as shown below:*
    > 
-   > | weights                    | image size | classes | pre logits | known labels |
+   > | Weights                    | Image Size | Classes | Pre Logits | Known Labels |
    > |:--------------------------:|:----------:|:-------:|:----------:|:------------:|
    > | *imagenet21k*              | 224        | 21843   | True       | False        |
    > | *imagenet21k+imagenet2012* | 384        | 1000    | False      | True         |
 
-2. **构建不同数据集下的预训练ViTB16**
-   
-   ```
+2. **Build a pre-trained ViT B16 model on different datasets**
+
+   ```python
    from keras_vit.vit import ViT_B16
-   vit_1 = ViT_B16(weights = "imagenet21k")
+   vit_1 = ViT_B16(weights="imagenet21k")
    vit_2 = ViT_B16(weights="imagenet21k+imagenet2012")
    ```
-   
-   > *预训练权重（.npz）文件会自动下载到：C:\Users\user_name\\.Keras\weights路径下。如果在下载过程意外中断，需要将该路径下的文件删除并重新下载，否则会报错。*
-   > 
-   > *若下载速度太慢，可手动下载（[百度网盘](https://pan.baidu.com/s/12dD74f4I2sELKbUVXaT3RA?pwd=52dl)），然后将文件放到上述路径中。*
 
-3. **构建未进行预训练的ViT6**
-   
-   ```
+   > *The pre-trained weights (.npz) files will automatically download to: `C:\Users\user_name\.keras\weights`. If the download is interrupted, you need to delete the files in this path and re-download them, or you will encounter errors.*
+   > 
+   > *If the download speed is too slow, you can manually download the files ([Baidu Netdisk](https://pan.baidu.com/s/12dD74f4I2sELKbUVXaT3RA?pwd=52dl)) and place them in the above path.*
+
+3. **Build a ViT B16 model without pre-training**
+
+   ```python
    from keras_vit.vit import ViT_B16
    vit = ViT_B16(pre_trained=False)
    ```
 
-4. **自定义参数构建预训练的ViT32**
-   
-   ```
+4. **Build a pre-trained ViT B32 model with custom parameters**
+
+   ```python
    from keras_vit.vit import ViT_B32
    vit = ViT_B32(
-       image_size = 128,
-       num_classes = 12, 
-       pre_logits = False,
-       weights = "imagenet21k",
-       )
+       image_size=128,
+       num_classes=12,
+       pre_logits=False,
+       weights="imagenet21k",
+   )
    ```
+
+   > *When the parameters of the pre-trained model are changed, some layers in the model will have their parameters randomly initialized instead of loading pre-trained weights. The pre-trained weights will still load into the unchanged layers. You can check the layer loading information with the* `loading_summary()` *method.*
    
-   > *当改变了预训练模型的参数，模型中某些层的参数会发生改变，这些层就不再读取预训练权重，而是随机初始化。对于未发生改变的层，预训练权重参数会正常加载到这些层中。可以通过* `loading_summary()`*方法查看每一层的加载信息。*
-   
-   ```
+   ```python
    vit.loading_summary()
    >>
    Model: "ViT-B-32-128"
    -----------------------------------------------------------------
-   layers                             load weights inf
+   Layers                             Load Weights Info
    =================================================================
-   patch_embedding                    loaded
+   patch_embedding                    Loaded
    
-   add_cls_token                      loaded - imagenet
+   add_cls_token                      Loaded - imagenet
    
-   position_embedding                 not loaded - mismatch
+   position_embedding                 Not loaded - mismatch
    
-   transformer_block_0                loaded - imagenet
+   transformer_block_0                Loaded - imagenet
    
-   transformer_block_1                loaded - imagenet
+   transformer_block_1                Loaded - imagenet
    
-   transformer_block_2                loaded - imagenet
+   transformer_block_2                Loaded - imagenet
    
-   transformer_block_3                loaded - imagenet
+   transformer_block_3                Loaded - imagenet
    
-   transformer_block_4                loaded - imagenet
+   transformer_block_4                Loaded - imagenet
    
-   transformer_block_5                loaded - imagenet
+   transformer_block_5                Loaded - imagenet
    
-   transformer_block_6                loaded - imagenet
+   transformer_block_6                Loaded - imagenet
    
-   transformer_block_7                loaded - imagenet
+   transformer_block_7                Loaded - imagenet
    
-   transformer_block_8                loaded - imagenet
+   transformer_block_8                Loaded - imagenet
    
-   transformer_block_9                loaded - imagenet
+   transformer_block_9                Loaded - imagenet
    
-   transformer_block_10               loaded - imagenet
+   transformer_block_10               Loaded - imagenet
    
-   transformer_block_11               loaded - imagenet
+   transformer_block_11               Loaded - imagenet
    
-   layer_norm                         loaded - imagenet
+   layer_norm                         Loaded - imagenet
    
-   mlp_head                           not loaded - mismatch
+   mlp_head                           Not loaded - mismatch
    =================================================================
    ```
 
-## **Q3: 如何自定义构建ViT？**
+## **Q3: How to build a custom ViT model?**
 
-1. **通过实例化 ViT 类来构建自定义ViT模型**
-   
-   ```
+1. **Build a custom ViT model by instantiating the ViT class**
+
+   ```python
    from keras_vit.vit import ViT
    vit = ViT(
-       image_size = 128,
-       patch_size = 36,
-       num_classes = 1,
-       hidden_dim = 128,
-       mlp_dim = 512,
-       atten_heads = 32,
-       encoder_depth = 4,
-       dropout_rate = 0.1,
-       activation = "sigmoid",
-       pre_logits = True,
-       include_mlp_head = True,
-       )
+       image_size=128,
+       patch_size=36,
+       num_classes=1,
+       hidden_dim=128,
+       mlp_dim=512,
+       atten_heads=32,
+       encoder_depth=4,
+       dropout_rate=0.1,
+       activation="sigmoid",
+       pre_logits=True,
+       include_mlp_head=True,
+   )
    vit.summary()
    
    >>
@@ -178,55 +177,55 @@
    Total params: 1,309,185
    Trainable params: 1,309,185
    Non-trainable params: 0
-   _________________________________________________________________==========================
+   _________________________________________________________________
    ```
-   
-   > *需要注意的是，*`hidden_dim`*参数需要能被* `atten_heads`*参数整除。*`image_size`*参数最好能被* `patch_size`*参数整除。*
 
-2. **将预训练权重加载到自定义ViT模型中**
-   
-   ```
+   > *Note that the* `hidden_dim` *parameter should be divisible by the* `atten_heads` *parameter. The* `image_size` *parameter should ideally be divisible by the* `patch_size` *parameter.*
+
+2. **Load pre-trained weights into a custom ViT model**
+
+   ```python
    from keras_vit import utils, vit
    vit_custom = vit.ViT(
        image_size=128,
        patch_size=8,
-       encoder_depth=4
-       )
+       encoder_depth=4,
+   )
    utils.load_imgnet_weights(vit_custom, "ViT-B_16_imagenet21k.npz")
    vit_custom.loading_summary()
    
    >>
    Model: "ViT-CUSTOM_SIZE-8-128"
    -----------------------------------------------------------------
-   layers                             load weights inf
+   Layers                             Load Weights Info
    =================================================================
-   patch_embedding                    mismatch
+   patch_embedding                    Mismatch
    
-   add_cls_token                      loaded - imagenet
+   add_cls_token                      Loaded - imagenet
    
-   position_embedding                 not loaded - mismatch
+   position_embedding                 Not loaded - mismatch
    
-   transformer_block_0                loaded - imagenet
+   transformer_block_0                Loaded - imagenet
    
-   transformer_block_1                loaded - imagenet
+   transformer_block_1                Loaded - imagenet
    
-   transformer_block_2                loaded - imagenet
+   transformer_block_2                Loaded - imagenet
    
-   transformer_block_3                loaded - imagenet
+   transformer_block_3                Loaded - imagenet
    
-   layer_norm                         loaded - imagenet
+   layer_norm                         Loaded - imagenet
    
-   pre_logits                         loaded - imagenet
+   pre_logits                         Loaded - imagenet
    
-   mlp_head                           not loaded - mismatch
+   mlp_head                           Not loaded - mismatch
    =================================================================
    ```
 
-## **Q4: 如何进行微调或直接用于图像分类 ？**
+## **Q4: How to fine-tune or directly use for image classification?**
 
-1. **微调**
-   
-   ```
+1. **Fine-tuning**
+
+   ```python
    from keras_vit.vit import ViT_L16
    
    # Set parameters
@@ -235,58 +234,63 @@
    ACTIVATION = ...
    ...
    
-   # build ViT
+   # Build ViT
    vit = ViT_B32(
-       image_size = IMAGE_SIZE,
-       num_classes = NUM_CLASSES, 
-       activation = ACTIVATION,
-       )
+       image_size=IMAGE
+
+_SIZE,
+       num_classes=NUM_CLASSES,
+       activation=ACTIVATION,
+   )
    
-   # Compiling ViT
+   # Compile ViT
    vit.compile(
-       optimizer = ...,
-       loss = ...,
-       metrics = ...
-       )
+       optimizer=...,
+       loss=...,
+       metrics=...,
+   )
    
-   # Define train, valid and test data
+   # Define train, valid, and test data
    train_generator = ...
    valid_generator = ...
    test_generator  = ...
    
-   # fine tuning ViT
+   # Fine-tuning ViT
    vit.fit(
-       x = train_generator ,
-       validation_data = valid_generator ,
-       steps_per_epoch = ...,
-       validation_steps = ...,
-       )
+       x=train_generator,
+       validation_data=valid_generator,
+       steps_per_epoch=...,
+       validation_steps=...,
+   )
    
-   # testing
-   vit.evaluate(x = test_generator, steps=...)
+   # Testing
+   vit.evaluate(x=test_generator, steps=...)
    ```
 
-2. **图像分类**
-   
-   ```
+2. **Image classification**
+
+   ```python
    from keras_vit import vit
    from keras_vit import utils
    
-   # Get pre-trained vitb16
+   # Get pre-trained ViT B16
    vit_model = vit.ViT_B16(weights="imagenet21k+imagenet2012")
    
-   # Load a picture
+   # Load an image
    img = utils.read_img("test.jpg", resize=vit_model.image_size)
-   img = img.reshape((1,*vit_model.image_size,3))
+   img = img.reshape((1, *vit_model.image_size, 3))
    
-   # Classifying
+   # Classify
    y = vit_model.predict(img)
    classes = utils.get_imagenet2012_classes()
    print(classes[y[0].argmax()])
    ```
-   
-   > *需要注意的是，由于目前包中没有imagenet21k数据集的标签文件，因此在应用预先训练的ViT进行图像分类时，请设置* `“imagenet21-k+imagenet2012”`。
-   > 
-   > *若进行微调，则* `“imagenet21k”` *和* `“imagenet21k+imagenet2012”`*都可用。*
 
-项目中fine_tuning_on_CIFAR10_demo.py为在[cifar10数据集](https://pan.baidu.com/s/1-BCPxN57mtHh2OwQVJTOSA?pwd=52dl)上微调的脚本，运行前需要将数据集解压后放到datasets文件夹中。
+   > *Note that since the package currently does not include a label file for the ImageNet21k dataset, please set the weights to* `"imagenet21k+imagenet2012"` *when applying the pre-trained ViT for image classification.*
+   > 
+   > *For fine-tuning, both* `"imagenet21k"` *and* `"imagenet21k+imagenet2012"` *can be used.*
+
+The project includes a script `fine_tuning_on_CIFAR10_demo.py` for fine-tuning on the [CIFAR10 dataset](https://pan.baidu.com/s/1-BCPxN57mtHh2OwQVJTOSA?pwd=52dl). Before running, unzip the dataset and place it in the `datasets` folder.
+```
+
+This Markdown content translates the original Chinese content into English while retaining the structure and technical details.
