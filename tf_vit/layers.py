@@ -2,6 +2,23 @@ from keras import layers
 from keras import activations
 import tensorflow as tf
 
+class PatchEmbedding3D(layers.Layer):
+    """3D patch embedding layer"""
+    def __init__(self, patch_size, hidden_dim, **kwargs):
+        super().__init__(**kwargs)
+        self.patch_size = patch_size
+        self.hidden_dim = hidden_dim
+
+    def build(self, input_shape):
+        self.conv = layers.Conv3D(self.hidden_dim, self.patch_size, strides=self.patch_size)
+        self.flatten = layers.Reshape((-1, self.hidden_dim))
+        super().build(input_shape)
+
+    def call(self, inputs):
+        x = self.conv(inputs)
+        x = self.flatten(x)
+        return x
+
 
 class PatchEmbedding(layers.Layer):
     """patch embedding layer"""
