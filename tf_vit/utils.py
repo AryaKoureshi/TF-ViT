@@ -6,7 +6,7 @@ import numpy as np
 def load_imgnet_weights(keras_model, weights_npz):
     """Load the imagenet pre training weights (.npz) for ViT Keras model.
     Weights file, for example: "ViT-B_16_imagenet21k.npz", "ViT-L_32_imagenet21k+imagenet2012.npz"
-    More weights files: https://github.com/djsaber/Keras-ViT/releases/tag/v1.0.0
+    More weights files: https://github.com/AryaKoureshi/TF-ViT/releases/tag/v1.0.0
     args:
         - keras_model: The keras ViT models that need to load pre trained weights
         - weights_npz: The .npz weights file
