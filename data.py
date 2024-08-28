@@ -91,8 +91,6 @@ def my_data_gen(infinite_data_gen, resize=None):
 
 
 def cifar_10_data_gen(path, batch_size=32, data="train", resize=None, label_smooth=None):
-    '''对cifar-10数据集构建的数据生成器
-    '''
     (train_imgs, train_labels), (test_imgs, test_labels) = load_cifar_10(path)
     if data == "train":
         imgs, labels = train_imgs, to_categorical(train_labels, 10)
