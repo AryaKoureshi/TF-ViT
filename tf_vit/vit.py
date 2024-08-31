@@ -1,18 +1,23 @@
-from tensorflow import keras
+from keras import utils
+from keras import models
 from keras import layers
-from .layers import PatchEmbedding3D, AddCLSToken, AddPositionEmbedding, TransformerEncoder
+from keras import activations
+from .utils import load_imgnet_weights
+from .layers import PatchEmbedding3D, PatchEmbedding, AddCLSToken, AddPositionEmbedding, TransformerEncoder
+from .config import BASIC_URL, WEIGHTS, VIT_B_CONFIG, VIT_L_CONFIG, WEIGHTS_CONFIG, PRE_TRAINED_WEIGHTS_FNAME
 
-class ViT3D(keras.Model):
+class ViT3D(models.Model):
     def __init__(
         self, 
-        volume_size=(18, 256, 256),  # Adjust based on your actual image size
-        patch_size=(2, 16, 16),  # Adjusted for 3D, ensure it divides volume_size evenly
-        num_classes=2,  # Binary classification: normal vs abnormal
-        hidden_dim=768,
-        mlp_dim=3072,
-        num_heads=12,
-        num_layers=12,
-        dropout_rate=0.1,
+        volume_size,
+        patch_size,
+        num_classes,
+        hidden_dim,
+        mlp_dim,
+        atten_heads,
+        encoder_depth,
+        dropout_rate,
+        activation,
         **kwargs
     ):
         super().__init__(**kwargs)
@@ -21,43 +26,45 @@ class ViT3D(keras.Model):
         self.hidden_dim = hidden_dim
         self.mlp_dim = mlp_dim
         self.num_classes = num_classes
-        self.num_heads = num_heads
-        self.num_layers = num_layers
+        self.atten_heads = atten_heads
+        self.encoder_depth = encoder_depth
         self.dropout_rate = dropout_rate
+        self.activation = activations.get(activation)
 
-        self.patch_embedding = PatchEmbedding3D(self.patch_size, self.hidden_dim)
-        self.add_cls_token = AddCLSToken(self.hidden_dim)
-        self.position_embedding = AddPositionEmbedding(dropout_rate=dropout_rate)
+        self.patch_embedding = PatchEmbedding3D(self.patch_size, self.hidden_dim, name="patch_embedding_3d")
+        self.add_cls_token = AddCLSToken(self.hidden_dim, name="add_cls_token")
+        self.position_embedding = AddPositionEmbedding(name="position_embedding")
         self.encoder_blocks = [
             TransformerEncoder(
                 self.mlp_dim,
-                self.num_heads,
+                self.atten_heads,
                 self.dropout_rate,
-            ) for _ in range(self.num_layers)
+                name=f"transformer_block_{i}"
+            ) for i in range(self.encoder_depth)
         ]
-        self.layer_norm = layers.LayerNormalization(epsilon=1e-6)
-        self.mlp_head = keras.Sequential([
-            layers.Dense(self.mlp_dim, activation='gelu'),
-            layers.Dropout(self.dropout_rate),
-            layers.Dense(self.num_classes)
-        ])
+        self.layer_norm = layers.LayerNormalization(epsilon=1e-6, name="layer_norm")
+        self.extract_token = layers.Lambda(lambda x: x[:, 0], name="extract_token")
+        self.mlp_head = layers.Dense(self.num_classes, self.activation, name="mlp_head")
 
-    def call(self, inputs, training=False):
+    def call(self, inputs):
         x = self.patch_embedding(inputs)
         x = self.add_cls_token(x)
         x = self.position_embedding(x)
         for encoder in self.encoder_blocks:
-            x = encoder(x, training=training)
+            x = encoder(x)
         x = self.layer_norm(x)
-        x = x[:, 0]  # Use [CLS] token for classification
+        x = self.extract_token(x)
         x = self.mlp_head(x)
         return x
 
-    def build_graph(self):
-        x = keras.Input(shape=(*self.volume_size, 1))
-        return keras.Model(inputs=[x], outputs=self.call(x))
+    def model_summary(self, verbose=True):
+        self.build((None, *self.volume_size, 1))  # Ensure the model is built
+        if verbose:
+            self.summary()
+        else:
+            self.summary(line_length=150, positions=[.33, .61, .68, 1.])
 
-'''
+
 class ViT(models.Model):
     """Implementation of VisionTransformer Based on Keras
     Args:
@@ -408,4 +415,3 @@ def ViT_L32(
         load_imgnet_weights(vit, weights)
 
     return vit
-'''
