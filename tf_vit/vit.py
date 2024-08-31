@@ -57,11 +57,6 @@ class ViT3D(keras.Model):
         x = keras.Input(shape=(*self.volume_size, 1))
         return keras.Model(inputs=[x], outputs=self.call(x))
 
-def create_3d_vit_model(input_shape=(18, 256, 256, 1), num_classes=2):
-    model = ViT3D(volume_size=input_shape[:3], num_classes=num_classes)
-    model.build((None, *input_shape))
-    return model
-
 '''
 class ViT(models.Model):
     """Implementation of VisionTransformer Based on Keras
