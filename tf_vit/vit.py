@@ -62,7 +62,7 @@ def create_3d_vit_model(input_shape=(18, 256, 256, 1), num_classes=2):
     model.build((None, *input_shape))
     return model
 
-
+'''
 class ViT(models.Model):
     """Implementation of VisionTransformer Based on Keras
     Args:
@@ -413,3 +413,4 @@ def ViT_L32(
         load_imgnet_weights(vit, weights)
 
     return vit
+'''
